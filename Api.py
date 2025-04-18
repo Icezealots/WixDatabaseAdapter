@@ -1,9 +1,17 @@
 # wix_adapter.py
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify ,abort
 import psycopg2
+
 
 app = Flask(__name__)
 
+MY_WIX_SECRET = "abcd1234supersecurekey"
+
+def check_secret():
+    incoming_secret = request.headers.get("x-wix-secrets")
+    if incoming_secret != MY_WIX_SECRET:
+        abort(403, description="Forbidden: Secret key is invalid")
+        
 # DB 連線設定
 def get_conn():
     return psycopg2.connect(
@@ -16,10 +24,12 @@ def get_conn():
 
 @app.route("/ping", methods=["GET"])
 def ping():
+    check_secret()
     return jsonify({"status": "ok"})
 
 @app.route("/schema", methods=["GET"])
 def schema():
+    check_secret()
     return jsonify({
         "collections": {
             "feedbacks": {
@@ -36,6 +46,7 @@ def schema():
 
 @app.route("/find", methods=["POST"])
 def find():
+    check_secret()
     body = request.get_json()
     collection = body.get("collectionName")
 
