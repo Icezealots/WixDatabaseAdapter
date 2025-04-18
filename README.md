@@ -1,0 +1,2 @@
+# WixDatabaseAdapter
+WixApi
