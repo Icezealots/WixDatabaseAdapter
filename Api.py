@@ -5,7 +5,7 @@ import psycopg2
 
 app = Flask(__name__)
 
-MY_WIX_SECRET = "abcd1234supersecurekey"
+MY_WIX_SECRET = "sdMUpozNTsUhq1bG5Kzs1d5Lq0FsbtDX"
 
 def check_secret():
     incoming_secret = request.headers.get("x-wix-secrets")
