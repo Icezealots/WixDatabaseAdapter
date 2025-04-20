@@ -1,6 +1,10 @@
 # wix_adapter.py
 from flask import Flask, request, jsonify ,abort
 import psycopg2
+import uuid
+
+_id = item.get("_id") or str(uuid.uuid4())
+
 
 
 app = Flask(__name__)
@@ -32,19 +36,46 @@ def schema():
     check_secret()
     return jsonify({
         "collections": {
-            "feedbacktest": {
+            "feedbacks": {
                 "fields": {
-                    "_id": {"type": "number"},
-                    "user_id": {"type": "text"},
-                    "feedback": {"type": "text"},
+                    "_id": {"type": "text"},
                     "_createdDate": {"type": "datetime"},
                     "_updatedDate": {"type": "datetime"},
-                    "_owner": {"type": "text"}
+                    "_owner": {"type": "text"},
+                    "user_id": {"type": "text"},
+                    "feedback": {"type": "text"}
                 },
                 "primaryKey": "_id"
             }
         }
     })
+
+@app.route("/insert", methods=["POST"])
+def insert():
+    check_secret()
+    body = request.get_json()
+    collection = body.get("collectionName")
+    item = body.get("item", {})
+
+    if collection != "feedbacks":
+        return jsonify({"inserted": False})
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO feedbacks (_id, _createdDate, _updatedDate, _owner, user_id, feedback)
+        VALUES (%s, NOW(), NOW(), %s, %s, %s)
+    """, (
+        item.get("_id"),
+        item.get("_owner", "anonymous"),
+        item.get("user_id"),
+        item.get("feedback")
+    ))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({"inserted": True})
 
 
 
