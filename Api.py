@@ -32,16 +32,20 @@ def schema():
     check_secret()
     return jsonify({
         "collections": {
-            "feedbacks": {
+            "feedbacktest": {
                 "fields": {
-                    "id": {"type": "number"},
+                    "_id": {"type": "number"},
                     "user_id": {"type": "text"},
-                    "feedback": {"type": "text"}
+                    "feedback": {"type": "text"},
+                    "_createdDate": {"type": "datetime"},
+                    "_updatedDate": {"type": "datetime"},
+                    "_owner": {"type": "text"}
                 },
-                "primaryKey": "id"
+                "primaryKey": "_id"
             }
         }
     })
+
 
 
 @app.route("/find", methods=["POST"])
