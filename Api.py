@@ -17,11 +17,11 @@ def check_secret():
 # PostgreSQL 資料庫連線設定
 def get_conn():
     return psycopg2.connect(
-        host="dpg-d014hq2dbo4c73drlss0-a.oregon-postgres.render.com",
-        port="5432",
-        database="soulv_db",
-        user="soulv",
-        password="sdMUpozNTsUhq1bG5Kzs1d5Lq0FsbtDX"
+        dbname="soulv_db", 
+        user="soulv", 
+        password="sdMUpozNTsUhq1bG5Kzs1d5Lq0FsbtDX",
+        host="dpg-d014hq2dbo4c73drlss0-a.oregon-postgres.render.com", 
+        port="5432"
     )
 
 @app.route("/ping", methods=["GET"])
